@@ -559,7 +559,7 @@ export default function SensoryCampusMap() {
               <div className="p-2 bg-teal-100 dark:bg-teal-900/50 rounded-lg transition-colors">
                 <MapPin className="text-teal-700 dark:text-teal-400" size={20} />
               </div>
-              <h1 className="text-xl font-bold tracking-tight">Sensory Campus</h1>
+              <h1 className="text-xl font-bold tracking-tight">NeuroNav Campus</h1>
             </div>
             <p className="text-sm text-slate-500 dark:text-slate-400 ml-1">Northumbria University</p>
           </div>
