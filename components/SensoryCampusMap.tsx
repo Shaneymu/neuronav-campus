@@ -786,7 +786,7 @@ export default function SensoryCampusMap() {
             {/* Drag Handle */}
             <button
               className="w-full flex justify-center pt-3 pb-1"
-              onClick={() => setSelectedBuilding(null)}
+              onClick={() => { setSelectedBuilding(null); setMobileDetailMode("compact"); }}
               aria-label="Close building details"
             >
               <div className="w-12 h-1.5 bg-slate-200 dark:bg-slate-700 rounded-full"></div>
@@ -803,7 +803,7 @@ export default function SensoryCampusMap() {
                   <span className="text-xs text-slate-400 px-1.5 py-0.5 bg-slate-100 dark:bg-slate-800 rounded font-mono">{selectedBuilding.code}</span>
                 </div>
               </div>
-              <button onClick={() => setSelectedBuilding(null)} className="p-2 bg-slate-100 dark:bg-slate-800 rounded-full" aria-label="Close">
+              <button onClick={() => { setSelectedBuilding(null); setMobileDetailMode("compact"); }} className="p-2 bg-slate-100 dark:bg-slate-800 rounded-full" aria-label="Close">
                 <X size={20} className="dark:text-white" />
               </button>
             </div>
