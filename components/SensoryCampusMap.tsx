@@ -57,6 +57,19 @@ const getCategoryIcon = (category: string) => {
   }
 };
 
+// Haversine distance in metres between two lat/lng points
+const getDistanceMetres = (lat1: number, lng1: number, lat2: number, lng2: number): number => {
+  const R = 6371e3;
+  const toRad = (d: number) => (d * Math.PI) / 180;
+  const dLat = toRad(lat2 - lat1);
+  const dLng = toRad(lng2 - lng1);
+  const a = Math.sin(dLat / 2) ** 2 + Math.cos(toRad(lat1)) * Math.cos(toRad(lat2)) * Math.sin(dLng / 2) ** 2;
+  return R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+};
+
+const CAMPUS_CENTRE = { lat: 54.9779, lng: -1.6075 };
+const MAX_ROUTING_DISTANCE = 2000; // 2km
+
 export default function SensoryCampusMap() {
   const [selectedBuilding, setSelectedBuilding] = useState<Building | null>(null);
   const [viewMode, setViewMode] = useState<'map' | 'list'>('map');
@@ -358,6 +371,14 @@ export default function SensoryCampusMap() {
       return;
     }
 
+    // Skip routing if user is too far from campus
+    const distToCampus = getDistanceMetres(userPosition.lat, userPosition.lng, CAMPUS_CENTRE.lat, CAMPUS_CENTRE.lng);
+    if (distToCampus > MAX_ROUTING_DISTANCE) {
+      setRoute(null);
+      setRouteError(null);
+      return;
+    }
+
     const controller = new AbortController();
     setRouteLoading(true);
     setRouteError(null);
@@ -459,6 +480,8 @@ export default function SensoryCampusMap() {
     setAccessSettings(prev => ({ ...prev, [key]: value }));
   };
 
+  const isNearCampus = userPosition ? getDistanceMetres(userPosition.lat, userPosition.lng, CAMPUS_CENTRE.lat, CAMPUS_CENTRE.lng) <= MAX_ROUTING_DISTANCE : false;
+
   const renderRouteBlock = () => {
     if (!selectedBuilding) return null;
 
@@ -474,6 +497,15 @@ export default function SensoryCampusMap() {
             Show my location to get walking directions
           </span>
         </button>
+      );
+    }
+
+    if (userPosition && !isNearCampus) {
+      return (
+        <div className="flex items-start gap-2 p-3 rounded-xl bg-slate-50 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700 mb-4">
+          <Navigation size={14} className="text-slate-400 mt-0.5 shrink-0" />
+          <p className="text-xs text-slate-500 dark:text-slate-400">Walking directions available when you're on or near campus</p>
+        </div>
       );
     }
 
