@@ -809,13 +809,16 @@ export default function SensoryCampusMap() {
             </div>
 
             {mobileDetailMode === "compact" && (
-              <div className="px-6 pb-6 pt-3 flex gap-3">
-                <button onClick={() => setMobileDetailMode("full")} className="flex-1 py-3 rounded-xl bg-teal-600 text-white font-semibold text-sm flex items-center justify-center gap-2 shadow-md">
-                  <Volume2 size={16} /> Sensory Info
-                </button>
-                <button onClick={() => { handleLocateClick(); }} className="flex-1 py-3 rounded-xl bg-slate-800 dark:bg-white text-white dark:text-slate-900 font-semibold text-sm flex items-center justify-center gap-2 shadow-md">
-                  <Navigation size={16} /> Navigate
-                </button>
+              <div className="px-6 pb-6 pt-3">
+                <div className="flex gap-3 mb-3">
+                  <button onClick={() => setMobileDetailMode("full")} className="flex-1 py-3 rounded-xl bg-teal-600 text-white font-semibold text-sm flex items-center justify-center gap-2 shadow-md">
+                    <Volume2 size={16} /> Sensory Info
+                  </button>
+                  <button onClick={() => { handleLocateClick(); }} className="flex-1 py-3 rounded-xl bg-slate-800 dark:bg-white text-white dark:text-slate-900 font-semibold text-sm flex items-center justify-center gap-2 shadow-md">
+                    <Navigation size={16} /> Navigate
+                  </button>
+                </div>
+                {renderRouteBlock()}
               </div>
             )}
             {/* Scrollable Content */}
