@@ -65,6 +65,7 @@ export default function SensoryCampusMap() {
   const [darkMode, setDarkMode] = useState(false);
   const [mapError, setMapError] = useState(false);
   const [mapReady, setMapReady] = useState(false);
+  const [mobileDetailMode, setMobileDetailMode] = useState('compact');
 
   // Accessibility State
   const [showAccessMenu, setShowAccessMenu] = useState(false);
@@ -181,9 +182,9 @@ export default function SensoryCampusMap() {
         icon: window.L.divIcon({
           className: 'custom-marker',
           html: iconHtml,
-          iconSize: [40, 40],
-          iconAnchor: [20, 40],
-          popupAnchor: [0, -40]
+          iconSize: [markerSize, markerSize],
+          iconAnchor: [markerSize / 2, markerSize / 2],
+          popupAnchor: [0, -(markerSize / 2)]
         })
       }).addTo(map);
 
@@ -448,6 +449,7 @@ export default function SensoryCampusMap() {
 
   const handleBuildingSelect = (building: Building) => {
     setSelectedBuilding(building);
+    setMobileDetailMode('compact');
     if (window.innerWidth < 768) setViewMode('map');
     if (mapInstanceRef.current) {
       mapInstanceRef.current.flyTo(building.coordinates, 18, { duration: 1.5 });
@@ -751,7 +753,14 @@ export default function SensoryCampusMap() {
                 <div className="w-3 h-3 rounded-full bg-rose-400 ring-2 ring-white dark:ring-slate-700 shadow-sm"></div>
                 <span className="text-xs text-slate-600 dark:text-slate-300">High Activity / Social</span>
               </div>
+              <button
+                onClick={() => setMobileDetailMode('compact')}
+                className="w-full py-2 rounded-xl border border-slate-200 dark:border-slate-700 text-sm text-slate-500 dark:text-slate-400 mb-2"
+              >
+                Back to options
+              </button>
             </div>
+            )}
           </div>
         )}
       </div>
@@ -781,7 +790,7 @@ export default function SensoryCampusMap() {
         aria-label={selectedBuilding ? `Details for ${selectedBuilding.name}` : undefined}
       >
         {selectedBuilding && (
-          <div className="flex flex-col max-h-[80vh]">
+          <div className="flex flex-col">
             {/* Drag Handle */}
             <button
               className="w-full flex justify-center pt-3 pb-1"
@@ -807,8 +816,28 @@ export default function SensoryCampusMap() {
               </button>
             </div>
 
-            {/* Scrollable Content */}
-            <div className="overflow-y-auto px-6 pb-8">
+            {/* COMPACT MODE */}
+            {mobileDetailMode === 'compact' && (
+              <div className="px-6 pb-6 pt-3 flex gap-3">
+                <button
+                  onClick={() => setMobileDetailMode('full')}
+                  className="flex-1 py-3 rounded-xl bg-teal-600 text-white font-semibold text-sm flex items-center justify-center gap-2 shadow-md"
+                >
+                  <Volume2 size={16} />
+                  Sensory Info
+                </button>
+                <button
+                  onClick={() => { setMobileDetailMode('full'); handleLocateClick(); }}
+                  className="flex-1 py-3 rounded-xl bg-slate-800 dark:bg-white text-white dark:text-slate-900 font-semibold text-sm flex items-center justify-center gap-2 shadow-md"
+                >
+                  <Navigation size={16} />
+                  Navigate
+                </button>
+              </div>
+            )}
+            {/* FULL MODE */}
+            {mobileDetailMode === 'full' && (
+            <div className="overflow-y-auto px-6 pb-8 max-h-[70vh]">
               <div className="flex flex-wrap gap-2 mb-4 mt-2 items-center">
                 {selectedBuilding.tags.map(tag => <Tag key={tag} type={tag} />)}
                 <BusynessBadge popularTimes={selectedBuilding.popularTimes} now={now} size="sm" />
