@@ -476,6 +476,20 @@ export default function SensoryCampusMap() {
     }
   };
 
+  const handleListItemClick = (building: Building) => {
+    if (window.innerWidth < 768) {
+      setExpandedListItem(prev => prev === building.id ? null : building.id);
+      setSelectedBuilding(building);
+    } else {
+      handleBuildingSelect(building);
+    }
+  };
+
+  const handleViewOnMap = (building: Building) => {
+    setExpandedListItem(null);
+    handleBuildingSelect(building);
+  };
+
   const handleAccessibilityUpdate = (key: keyof typeof accessSettings, value: number | boolean) => {
     setAccessSettings(prev => ({ ...prev, [key]: value }));
   };
@@ -654,10 +668,10 @@ export default function SensoryCampusMap() {
               role="listitem"
             >
               <button
-                onClick={() => handleBuildingSelect(building)}
-                onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); handleBuildingSelect(building); } }}
+                onClick={() => handleListItemClick(building)}
+                onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); handleListItemClick(building); } }}
                 className={`w-full text-left p-4 rounded-xl border transition-all cursor-pointer ${selectedBuilding?.id === building.id ? 'bg-teal-50/50 dark:bg-teal-900/20 border-teal-200 dark:border-teal-700 ring-1 ring-teal-500 dark:ring-teal-700' : 'bg-white dark:bg-slate-800 border-slate-100 dark:border-slate-700 hover:border-teal-100 dark:hover:border-teal-800'}`}
-                aria-expanded={selectedBuilding?.id === building.id}
+                aria-expanded={expandedListItem === building.id || selectedBuilding?.id === building.id}
                 aria-label={`${building.name} - ${getCategoryLabel(building.category)}`}
               >
                 <div className="mb-2">
@@ -675,6 +689,39 @@ export default function SensoryCampusMap() {
                 <div className="flex flex-wrap gap-2 mb-3 items-center">
                   {building.tags.map(tag => <Tag key={tag} type={tag} />)}
                   <BusynessBadge popularTimes={building.popularTimes} now={now} size="sm" />
+                </div>
+
+                {/* Mobile: Expand details inline */}
+                <div className="md:hidden">
+                  {expandedListItem === building.id && (
+                    <div className="mt-4 pt-4 border-t border-teal-100 dark:border-slate-700">
+                      <p className="text-sm text-slate-600 dark:text-slate-300 mb-4 leading-relaxed">{building.description}</p>
+                      <BusynessForecast popularTimes={building.popularTimes} now={now} />
+                      <BusyChart data={building.popularTimes} now={now} />
+                      {building.sensoryEntrance && (
+                        <div className="bg-indigo-50 dark:bg-indigo-900/20 p-3 rounded-lg border border-indigo-100 dark:border-indigo-800 mb-3">
+                          <div className="flex items-start gap-2">
+                            <DoorOpen className="text-indigo-500 dark:text-indigo-400 mt-0.5 shrink-0" size={16} />
+                            <div>
+                              <p className="text-xs font-bold text-indigo-700 dark:text-indigo-300 uppercase mb-0.5">Low-Sensory Entry</p>
+                              <p className="text-xs text-slate-600 dark:text-slate-300 italic">{building.sensoryEntrance}</p>
+                            </div>
+                          </div>
+                        </div>
+                      )}
+                      <div className="space-y-2 bg-white/60 dark:bg-slate-800/60 p-3 rounded-lg mb-3 border border-slate-100 dark:border-slate-700">
+                        <SensoryMeter label="Noise" value={building.sensoryProfile.noise} icon={Volume2} lowLabel="Silent" highLabel="Loud" />
+                        <SensoryMeter label="Crowds" value={building.sensoryProfile.crowds} icon={Users} lowLabel="Empty" highLabel="Busy" />
+                        <SensoryMeter label="Light" value={building.sensoryProfile.lighting} icon={Sun} lowLabel="Dim" highLabel="Bright" />
+                      </div>
+                      <button
+                        onClick={(e) => { e.stopPropagation(); handleViewOnMap(building); }}
+                        className="w-full py-3 rounded-xl bg-slate-800 dark:bg-white text-white dark:text-slate-900 font-semibold text-sm flex items-center justify-center gap-2 shadow-md mb-1"
+                      >
+                        <MapPin size={16} /> View on Map
+                      </button>
+                    </div>
+                  )}
                 </div>
 
                 {/* Desktop: Expand details inline */}
