@@ -79,6 +79,7 @@ export default function SensoryCampusMap() {
   const [mapError, setMapError] = useState(false);
   const [mapReady, setMapReady] = useState(false);
   const [mobileDetailMode, setMobileDetailMode] = useState("compact");
+  const [expandedListItem, setExpandedListItem] = useState<string | null>(null);
 
   // Accessibility State
   const [showAccessMenu, setShowAccessMenu] = useState(false);
