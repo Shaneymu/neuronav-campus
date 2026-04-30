@@ -3,7 +3,7 @@ import {
   MapPin, Volume2, Sun, Search, X, List, Map as MapIcon,
   Loader2, Moon, DoorOpen, BookOpen, Dumbbell, Coffee, Monitor,
   Sparkles, GraduationCap, Users, SlidersHorizontal, Navigation, CheckCircle2, AlertTriangle,
-  Footprints, Timer
+  Footprints, Timer, Maximize2, Minimize2
 } from 'lucide-react';
 import { BUILDINGS_DATA, MAP_CONFIG, getCategoryIconSvg } from '../constants';
 import { Building } from '../types';
@@ -72,7 +72,7 @@ const MAX_ROUTING_DISTANCE = 2000; // 2km
 
 export default function SensoryCampusMap() {
   const [selectedBuilding, setSelectedBuilding] = useState<Building | null>(null);
-  const [viewMode, setViewMode] = useState<'map' | 'list'>('map');
+  const [viewMode, setViewMode] = useState<'map' | 'list' | 'fullList'>('map');
   const [searchTerm, setSearchTerm] = useState('');
   const [filterQuiet, setFilterQuiet] = useState(false);
   const [darkMode, setDarkMode] = useState(false);
@@ -596,8 +596,8 @@ export default function SensoryCampusMap() {
 
       {/* SIDEBAR */}
       <div className={`
-        ${viewMode === 'list' ? 'flex' : 'hidden'}
-        md:flex w-full md:w-96 bg-white dark:bg-slate-800 shadow-xl z-20 flex-col
+        ${viewMode === 'list' || viewMode === 'fullList' ? 'flex' : 'hidden'}
+        md:flex w-full ${viewMode === 'fullList' ? 'md:w-full' : 'md:w-96'} bg-white dark:bg-slate-800 shadow-xl z-20 flex-col
         h-full border-r border-slate-100 dark:border-slate-700 relative transition-colors duration-300
       `}>
 
@@ -613,6 +613,14 @@ export default function SensoryCampusMap() {
           </div>
 
           <div className="flex gap-2">
+            <button
+              onClick={() => setViewMode(viewMode === 'fullList' ? 'map' : 'fullList')}
+              className="hidden md:flex p-2 rounded-full bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-600 transition-colors"
+              aria-label={viewMode === 'fullList' ? 'Return to map view' : 'View full list without map'}
+              title={viewMode === 'fullList' ? 'Back to Map' : 'Full List View'}
+            >
+              {viewMode === 'fullList' ? <Minimize2 size={18} /> : <Maximize2 size={18} />}
+            </button>
             <button
               onClick={() => setShowAccessMenu(!showAccessMenu)}
               className={`p-2 rounded-full transition-colors ${showAccessMenu ? 'bg-teal-100 text-teal-700 dark:bg-teal-900 dark:text-teal-300' : 'bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-300'}`}
@@ -656,7 +664,7 @@ export default function SensoryCampusMap() {
         </div>
 
         <div
-          className="flex-1 overflow-y-auto p-4 space-y-3 bg-slate-50 dark:bg-slate-900/50 pb-24 md:pb-4"
+          className={`flex-1 overflow-y-auto p-4 bg-slate-50 dark:bg-slate-900/50 pb-24 md:pb-4 ${viewMode === 'fullList' ? 'grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 auto-rows-min' : 'space-y-3'}`}
           role="list"
           aria-label="Campus buildings"
         >
@@ -727,7 +735,7 @@ export default function SensoryCampusMap() {
 
                 {/* Desktop: Expand details inline */}
                 <div className="hidden md:block">
-                  {selectedBuilding?.id === building.id && (
+                  {(selectedBuilding?.id === building.id || viewMode === 'fullList') && (
                     <div className="mt-4 pt-4 border-t border-teal-100 dark:border-slate-700">
                       <p className="text-sm text-slate-600 dark:text-slate-300 mb-4 leading-relaxed">{building.description}</p>
                       <BusynessForecast popularTimes={building.popularTimes} now={now} />
@@ -759,6 +767,14 @@ export default function SensoryCampusMap() {
                         <p className="flex items-center gap-2"><Navigation size={12} /> {building.access}</p>
                         <p className="flex items-center gap-2"><CheckCircle2 size={12} /> Best time: {building.bestTime}</p>
                       </div>
+                      {viewMode === 'fullList' && (
+                        <button
+                          onClick={(e) => { e.stopPropagation(); setViewMode('map'); handleBuildingSelect(building); }}
+                          className="w-full mt-3 py-2.5 rounded-xl bg-slate-800 dark:bg-white text-white dark:text-slate-900 font-semibold text-sm flex items-center justify-center gap-2 shadow-md hover:opacity-90 transition-opacity"
+                        >
+                          <MapPin size={16} /> View on Map
+                        </button>
+                      )}
                     </div>
                   )}
                 </div>
@@ -769,7 +785,7 @@ export default function SensoryCampusMap() {
       </div>
 
       {/* MAP AREA */}
-      <div className={`flex-1 relative bg-slate-100 dark:bg-slate-900 ${viewMode === 'map' ? 'block' : 'hidden md:block'}`}>
+      <div className={`flex-1 relative bg-slate-100 dark:bg-slate-900 ${viewMode === 'fullList' ? 'hidden' : viewMode === 'map' ? 'block' : 'hidden md:block'}`}>
         <div ref={mapContainerRef} className="w-full h-full z-0 outline-none relative" role="application" aria-label="Campus map">
           {!mapReady && !mapError && (
             <div className="absolute inset-0 flex flex-col items-center justify-center bg-slate-100 dark:bg-slate-900 z-50 text-slate-400">
