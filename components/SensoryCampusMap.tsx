@@ -831,15 +831,34 @@ export default function SensoryCampusMap() {
           </div>
         )}
 
-        {/* Map Brand Badge — visible on both mobile and desktop map views */}
+        {/* Map Brand Badge + Controls — visible on both mobile and desktop map views */}
         {mapReady && (
-          <div className="absolute top-4 left-4 z-[400] bg-white/90 dark:bg-slate-800/90 backdrop-blur-sm px-4 py-2.5 rounded-xl shadow-sm border border-white/50 dark:border-slate-600/50 flex items-center gap-2.5">
-            <div className="p-1.5 bg-teal-100 dark:bg-teal-900/50 rounded-lg">
-              <MapPin className="text-teal-700 dark:text-teal-400" size={16} />
+          <div className="absolute top-4 left-4 right-4 z-[400] flex items-start justify-between">
+            <div className="bg-white/90 dark:bg-slate-800/90 backdrop-blur-sm px-4 py-2.5 rounded-xl shadow-sm border border-white/50 dark:border-slate-600/50 flex items-center gap-2.5">
+              <div className="p-1.5 bg-teal-100 dark:bg-teal-900/50 rounded-lg">
+                <MapPin className="text-teal-700 dark:text-teal-400" size={16} />
+              </div>
+              <div>
+                <h1 className="text-sm font-bold tracking-tight text-slate-800 dark:text-white leading-tight">NeuroNav Campus</h1>
+                <p className="text-[10px] text-slate-500 dark:text-slate-400 leading-tight">Northumbria University</p>
+              </div>
             </div>
-            <div>
-              <h1 className="text-sm font-bold tracking-tight text-slate-800 dark:text-white leading-tight">NeuroNav Campus</h1>
-              <p className="text-[10px] text-slate-500 dark:text-slate-400 leading-tight">Northumbria University</p>
+            <div className="flex gap-2 md:hidden">
+              <button
+                onClick={() => setShowAccessMenu(!showAccessMenu)}
+                className={`p-2.5 rounded-full shadow-sm backdrop-blur-sm border transition-colors ${showAccessMenu ? 'bg-teal-100/90 text-teal-700 border-teal-200/50 dark:bg-teal-900/90 dark:text-teal-300 dark:border-teal-700/50' : 'bg-white/90 dark:bg-slate-800/90 text-slate-600 dark:text-slate-300 border-white/50 dark:border-slate-600/50'}`}
+                aria-label="Accessibility Settings"
+                aria-expanded={showAccessMenu}
+              >
+                <SlidersHorizontal size={18} />
+              </button>
+              <button
+                onClick={() => setDarkMode(!darkMode)}
+                className="p-2.5 rounded-full bg-white/90 dark:bg-slate-800/90 shadow-sm backdrop-blur-sm border border-white/50 dark:border-slate-600/50 text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors"
+                aria-label={darkMode ? 'Switch to light mode' : 'Switch to dark mode'}
+              >
+                {darkMode ? <Sun size={18} /> : <Moon size={18} />}
+              </button>
             </div>
           </div>
         )}
