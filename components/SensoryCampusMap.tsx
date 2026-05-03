@@ -831,6 +831,19 @@ export default function SensoryCampusMap() {
           </div>
         )}
 
+        {/* Map Brand Badge — visible on both mobile and desktop map views */}
+        {mapReady && (
+          <div className="absolute top-4 left-4 z-[400] bg-white/90 dark:bg-slate-800/90 backdrop-blur-sm px-4 py-2.5 rounded-xl shadow-sm border border-white/50 dark:border-slate-600/50 flex items-center gap-2.5">
+            <div className="p-1.5 bg-teal-100 dark:bg-teal-900/50 rounded-lg">
+              <MapPin className="text-teal-700 dark:text-teal-400" size={16} />
+            </div>
+            <div>
+              <h1 className="text-sm font-bold tracking-tight text-slate-800 dark:text-white leading-tight">NeuroNav Campus</h1>
+              <p className="text-[10px] text-slate-500 dark:text-slate-400 leading-tight">Northumbria University</p>
+            </div>
+          </div>
+        )}
+
         {/* Desktop Legend */}
         {mapReady && (
           <div className="absolute top-6 right-6 z-[400] bg-white/90 dark:bg-slate-800/90 backdrop-blur-sm p-4 rounded-xl shadow-sm border border-white/50 dark:border-slate-600/50 max-w-xs hidden md:block">
