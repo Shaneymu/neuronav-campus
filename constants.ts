@@ -39,7 +39,7 @@ export const BUILDINGS_DATA: Building[] = [
     description: 'The main study hub. Floors 3 and 4 are strictly Silent Study. The basement is dimmer and quieter than the ground floor.',
     features: ['Silent Study (Floors 2-4)', 'Sensory Pods available'],
     access: 'Automatic revolving door. Lifts to all floors.',
-    sensoryEntrance: 'Avoid the main revolving door during class changeover (xx:50 - xx:00). Use the accessible pass door for a slower entry.',
+    sensoryEntrance: 'Avoid the main revolving door during class changeovers, which tend to peak around ten-to and on the hour every hour. Use the accessible pass door for a slower entry.',
     bestTime: 'Before 11am or after 6pm',
     // Typical undergrad study pattern — slow start, long afternoon peak, tapers by evening.
     popularTimes: [15, 25, 40, 55, 60, 55, 70, 75, 75, 60, 45, 30]
